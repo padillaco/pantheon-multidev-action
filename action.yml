@@ -1,0 +1,46 @@
+name: 'Pantheon Create/Delete Multidev Environment'
+description: 'Create or delete a Pantheon multidev environment.'
+author: 'padillaco'
+branding:
+  icon: 'cloud-lightning'
+  color: 'blue'
+inputs:
+  pantheon_site:
+    description: 'Name of Pantheon site to deploy to.'
+    required: true
+  pantheon_machine_token:
+    description: 'Pantheon machine token to use.'
+    required: true
+  terminus_version:
+    description: 'Version of terminus to use.'
+    default: '3.3.0'
+  env_name:
+    description: 'The multidev environment name.'
+    required: true
+  action:
+    description: 'Create or delete the environment.'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Install terminus
+      shell: bash
+      run: |
+        mkdir -p /tmp/terminus && cd /tmp/terminus
+        curl -L "https://github.com/pantheon-systems/terminus/releases/download/${{ inputs.terminus_version }}/terminus.phar" --output terminus
+        chmod +x terminus
+        sudo mv terminus /usr/local/bin/terminus
+
+    - name: Authenticate with Terminus
+      shell: bash
+      run: terminus auth:login --machine-token=${{ inputs.pantheon_machine_token }}
+
+    - name: Pantheon Create Multidev Environment
+      if: inputs.action == 'create'
+      shell: bash
+      run: terminus multidev:create -- ${{ inputs.pantheon_site }}.dev ${{ inputs.env_name }}
+
+    - name: Pantheon Delete Multidev Environment
+      if: inputs.action == 'delete'
+      shell: bash
+      run: terminus multidev:delete --delete-branch -- ${{ inputs.pantheon_site }}.${{ inputs.env_name }}
