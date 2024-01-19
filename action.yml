@@ -6,7 +6,7 @@ branding:
   color: 'blue'
 inputs:
   pantheon_site:
-    description: 'Name of Pantheon site to deploy to.'
+    description: 'Name of Pantheon site.'
     required: true
   pantheon_machine_token:
     description: 'Pantheon machine token to use.'
