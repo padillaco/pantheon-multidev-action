@@ -5,16 +5,13 @@ branding:
   icon: 'cloud-lightning'
   color: 'blue'
 inputs:
-  pantheon_site:
-    description: 'Name of Pantheon site.'
+  pantheon_site_slug:
+    description: 'The slug name of the Pantheon site to deploy to.'
     required: true
   pantheon_machine_token:
     description: 'Pantheon machine token to use.'
     required: true
-  terminus_version:
-    description: 'Version of terminus to use.'
-    default: '3.3.0'
-  env_name:
+  multidev_env_name:
     description: 'The multidev environment name.'
     required: true
   action:
@@ -26,22 +23,22 @@ runs:
     - name: Validate Multidev Environment Name
       shell: bash
       run: |
-        if [[ ${#INPUT_ENV_NAME} == 0 ]]; then
+        if [[ ${#INPUT_MULTIDEV_ENV_NAME} == 0 ]]; then
           echo "The multidev environment name must not be empty.
           exit 1
-        elif [[ ${#INPUT_ENV_NAME} -ge 5 ]]; then
+        elif [[ ${#INPUT_MULTIDEV_ENV_NAME} -ge 5 ]]; then
           echo "The multidev environment name must be 11 characters or less.
           exit 1
-        elif [[ $INPUT_ENV_NAME =~ '^(master|settings|team|support|debug|multidev|files|tags|billing)$' ]]; then
+        elif [[ $INPUT_MULTIDEV_ENV_NAME =~ '^(master|settings|team|support|debug|multidev|files|tags|billing)$' ]]; then
           echo "The multidev environment name must not be any of the following: master, settings, team, support, debug, multidev, files, tags, or billing."
           exit 1
         fi
 
-    - name: Install terminus
+    - name: Install Terminus
       shell: bash
       run: |
         mkdir -p /tmp/terminus && cd /tmp/terminus
-        curl -L "https://github.com/pantheon-systems/terminus/releases/download/${{ inputs.terminus_version }}/terminus.phar" --output terminus
+        curl -L "https://github.com/pantheon-systems/terminus/releases/download/3.5.2/terminus.phar" --output terminus
         chmod +x terminus
         sudo mv terminus /usr/local/bin/terminus
 
@@ -52,9 +49,9 @@ runs:
     - name: Pantheon Create Multidev Environment
       if: inputs.action == 'create'
       shell: bash
-      run: terminus multidev:create -- ${{ inputs.pantheon_site }}.dev ${{ inputs.env_name }}
+      run: terminus multidev:create -- ${{ inputs.pantheon_site_slug }}.dev ${{ inputs.multidev_env_name }}
 
     - name: Pantheon Delete Multidev Environment
       if: inputs.action == 'delete'
       shell: bash
-      run: terminus multidev:delete --delete-branch -- ${{ inputs.pantheon_site }}.${{ inputs.env_name }}
+      run: terminus multidev:delete --delete-branch -- ${{ inputs.pantheon_site_slug }}.${{ inputs.multidev_env_name }}
