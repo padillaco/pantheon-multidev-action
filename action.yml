@@ -31,8 +31,8 @@ runs:
         elif [[ ${#INPUT_MULTIDEV_ENV_NAME} -ge 5 ]]; then
           echo "The multidev environment name must be 11 characters or less.
           exit 1
-        elif [[ $INPUT_MULTIDEV_ENV_NAME =~ '^(master|settings|team|support|debug|multidev|files|tags|billing)$' ]]; then
-          echo "The multidev environment name must not be any of the following: master, settings, team, support, debug, multidev, files, tags, or billing."
+        elif [[ $INPUT_MULTIDEV_ENV_NAME =~ '^(master|test|settings|team|support|debug|multidev|files|tags|billing)$' ]]; then
+          echo "The multidev environment name must not be any of the following: master, test, settings, team, support, debug, multidev, files, tags, or billing."
           exit 1
         fi
 
