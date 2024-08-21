@@ -9,7 +9,7 @@ inputs:
     description: 'The slug name of the Pantheon site to deploy to.'
     required: true
   pantheon_machine_token:
-    description: 'Pantheon machine token to use.'
+    description: 'The Pantheon machine token to use.'
     required: true
   multidev_env_name:
     description: 'The multidev environment name.'
@@ -21,6 +21,8 @@ runs:
   using: 'composite'
   steps:
     - name: Validate Multidev Environment Name
+      env:
+        INPUT_MULTIDEV_ENV_NAME: ${{ inputs.multidev_env_name }}
       shell: bash
       run: |
         if [[ ${#INPUT_MULTIDEV_ENV_NAME} == 0 ]]; then
