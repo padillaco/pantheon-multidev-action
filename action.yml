@@ -56,4 +56,4 @@ runs:
     - name: Pantheon Delete Multidev Environment
       if: inputs.action == 'delete'
       shell: bash
-      run: terminus multidev:delete --delete-branch -- ${{ inputs.pantheon_site_slug }}.${{ inputs.multidev_env_name }}
+      run: terminus multidev:delete --delete-branch --yes -- ${{ inputs.pantheon_site_slug }}.${{ inputs.multidev_env_name }}
