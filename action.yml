@@ -1,24 +1,24 @@
-name: 'Pantheon Create/Delete Multidev Environment'
-description: 'Create or delete a Pantheon multidev environment.'
-author: 'padillaco'
+name: Pantheon Create/Delete Multidev Environment
+description: Create or delete a Pantheon multidev environment.
+author: padillaco
 branding:
-  icon: 'cloud-lightning'
-  color: 'blue'
+  icon: cloud-lightning
+  color: blue
 inputs:
   pantheon_site_slug:
-    description: 'The slug name of the Pantheon site to deploy to.'
+    description: The slug name of the Pantheon site to deploy to.
     required: true
   pantheon_machine_token:
-    description: 'The Pantheon machine token to use.'
+    description: The Pantheon machine token to use.
     required: true
   multidev_env_name:
-    description: 'The multidev environment name.'
+    description: The multidev environment name.
     required: true
   action:
-    description: 'Create or delete the environment.'
+    description: Create or delete the environment.
     required: true
 runs:
-  using: 'composite'
+  using: composite
   steps:
     - name: Validate Multidev Environment Name
       env:
@@ -48,12 +48,12 @@ runs:
       shell: bash
       run: terminus auth:login --machine-token=${{ inputs.pantheon_machine_token }}
 
-    - name: Pantheon Create Multidev Environment
+    - name: Create Multidev Environment
       if: inputs.action == 'create'
       shell: bash
       run: terminus multidev:create -- ${{ inputs.pantheon_site_slug }}.dev ${{ inputs.multidev_env_name }}
 
-    - name: Pantheon Delete Multidev Environment
+    - name: Delete Multidev Environment
       if: inputs.action == 'delete'
       shell: bash
       run: terminus multidev:delete --delete-branch --yes -- ${{ inputs.pantheon_site_slug }}.${{ inputs.multidev_env_name }}
